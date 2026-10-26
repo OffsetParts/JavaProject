@@ -1,0 +1,89 @@
+DentalRecords - Design
+======================
+
+DATA
+----
+familyArray : String[familySize]
+    One name per family member.
+
+teethRecord : char[familySize][2][]
+    Plane  = person (same index as familyArray)
+    Row 0  = uppers (UPPER), Row 1 = lowers (LOWER)
+    Column = one tooth: 'I' incisor, 'B' bicuspid, 'M' missing
+    Rows    : each row's length is that layer's number of teeth.
+
+ALGORITHM
+---------
+main method
+    Print the welcome banner
+    Read the family size
+    While the size is < 1 or > MAX_PEOPLE
+        Print error, read the size again
+    Create familyArray and teethRecord for that many people
+    For each family member
+        Read the name into familyArray
+        Read the upper and lower for that member
+    Do
+        Read a menu option (converted to lower case)
+        While the option is not p, e, r or x
+            Print error, read the option again
+        If p: printRecord
+        If e: extractCommand
+        If r: rootCommand
+    While the option is not x
+    Print the exit message with a smile
+
+teethRecorder
+    Read a tooth string (converted to upper case)
+    While the string has an invalid letter (validateType) or more than MAX_TEETH teeth
+        If it has an invalid letter: print "Invalid teeth types"
+        Otherwise: print "Too many teeth"
+        Read the string again
+    Return the string as an array of characters
+
+validType
+    For each character in the string
+        If it is not I, B or M, return false
+    Return true
+
+printRecord
+    For each family member
+        Print the name
+        For each layer (upper then lowers)
+            Print the layer label
+            For each tooth in the layer
+                Print the tooth number and its letter
+
+extractCommand
+    Read a name and find its position with findMember
+    While the position is -1
+        Print error, read the name again
+    Read a layer letter (converted to lower case)
+    While the letter is not u or l
+        Print error, read the letter again
+    Convert the letter to the row index (UPPER or LOWER)
+    Read a tooth number
+    While the number is < 1, > the number of teeth in the row,
+          or that tooth is already missing
+        If the number is out of range: print "Invalid tooth number"
+        Otherwise: print "Missing tooth"
+        Read the number again
+    Set that tooth to M (Missing)
+
+findMember
+    For each family member
+        If the name matches, ignoring case, return the index
+    Return -1
+
+rootCommand
+    Set the incisor, bicuspid and missing counts to 0
+    For each family member, for each layer, for each tooth
+        Add 1 to the count for that tooth's type
+    If there are incisors
+        discriminant = sqrt(B*B + 4*I*M)
+        Print root 1 = (-B + discriminant) / (2*I)
+        Print root 2 = (-B - discriminant) / (2*I)
+    Else if there are bicuspids
+        Print the single root M / B
+    Else
+        Print that there are no roots
